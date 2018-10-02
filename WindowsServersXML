@@ -1,0 +1,147 @@
+<Subscription xmlns="http://schemas.microsoft.com/2006/03/windows/events/subscription">
+ <SubscriptionId>serversWEC</SubscriptionId>
+ <SubscriptionType>SourceInitiated</SubscriptionType>
+ <Description>events from Windows Servers</Description>
+ <Enabled>true</Enabled>
+ <Uri>http://schemas.microsoft.com/wbem/wsman/1/windows/EventLog</Uri>
+ <ConfigurationMode>MinLatency</ConfigurationMode>
+  <Query>
+    <![CDATA[
+      <QueryList>
+        <Query Id="0" Path="Security">
+          <!-- All Security events-->
+          <Select Path="Security">*[System[(EventID!=5156)]]</Select>
+        </Query>
+ 
+        <Query Id="1" Path="System">
+          <!-- RADIUS authentication events User Assigned IP address (20274), User successfully authenticated (20250), User Disconnected (20275)  -->
+          <Select Path="System">*[System[Provider[@Name='RemoteAccess'] and (EventID=20274 or EventID=20250 or EventID=20275)]]</Select>
+        </Query>
+ 
+        <Query Id="2" Path="Microsoft-Windows-CAPI2/Operational">
+          <!-- CAPI events Build Chain (11), Private Key accessed (70), X509 object (90)-->
+          <Select Path="Microsoft-Windows-CAPI2/Operational">*[System[(EventID=11 or EventID=70 or EventID=90)]]</Select>
+        </Query>
+ 
+        <Query Id="3" Path="Microsoft-Windows-WinRM/Operational">
+          <!--REmote operational logs-->
+          <Select>*[System[(Level=1  or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]</Select>
+        </Query>
+ 
+        <Query Id="4" Path="Microsoft-Windows-LSA/Operational">
+          <!-- Groups assigned to new login (except for well known, built-in accounts)-->
+          <Select Path="Microsoft-Windows-LSA/Operational">*[System[(EventID=300)]] and (*[EventData[Data[@Name="TargetUserSid"] != "S-1-5-20"]]) and (*[EventData[Data[@Name="TargetUserSid"] != "S-1-5-18"]]) and (*[EventData[Data[@Name="TargetUserSid"] != "S-1-5-19"]])</Select>
+        </Query>
+   
+        <Query Id="5" Path="Microsoft-Windows-AppLocker/EXE and DLL">
+          <!-- AppLocker EXE events or Script events -->
+          <Select Path="Microsoft-Windows-AppLocker/EXE and DLL">*[UserData[RuleAndFileData[PolicyName="EXE"]]]</Select>
+          <Select Path="Microsoft-Windows-AppLocker/MSI and Script">*</Select>
+        </Query>
+ 
+        <Query Id="7" Path="Microsoft-Windows-DNS-Client/Operational">
+          <!-- DNS Client events Query Completed (3008) -->
+          <Select Path="Microsoft-Windows-DNS-Client/Operational">*[System[(EventID=3008)]]</Select>
+          <!-- suppresses local machine name resolution events -->
+          <Suppress Path="Microsoft-Windows-DNS-Client/Operational">*[EventData[Data[@Name="QueryOptions"]="140737488355328"]]</Suppress>
+          <!-- suppresses empty name resolution events -->
+          <Suppress Path="Microsoft-Windows-DNS-Client/Operational">*[EventData[Data[@Name="QueryResults"]=""]]</Suppress>
+        </Query>
+  
+        <Query Id="12" Path="Microsoft-Windows-PowerShell/Operational">
+          <!-- PowerShell execute block activity (4103), Remote Command(4104), Start Command(4105), Stop Command(4106) -->
+          <Select Path="Microsoft-Windows-PowerShell/Operational">*[System[(EventID=4103 or EventId=4104 or EventId=4105 or EventId=4106)]]</Select>
+        </Query>
+ 
+        <Query Id="13" Path="Microsoft-Windows-DriverFrameworks-UserMode/Operational">
+          <!-- Detect User-Mode drivers loaded - for potential BadUSB detection. -->
+          <Select Path="Microsoft-Windows-DriverFrameworks-UserMode/Operational">*[System[(EventID=2004)]]</Select>
+        </Query>
+ 
+        <Query Id="14" Path="Windows PowerShell">
+          <!-- Legacy PowerShell pipeline execution details (800) -->
+          <Select Path="Windows PowerShell">*[System[(EventID=800)]]</Select>
+        </Query>
+ 
+        <Query Id="15" Path="Application">
+          <!-- WER events for application crashes only -->
+          <Select Path="Application">*[System[Provider[@Name='Windows Error Reporting']]] and (*[EventData[Data[3] ="APPCRASH"]])</Select>
+        </Query>
+ 
+        <Query Id="16" Path="System">
+          <!-- Shutdown initiate requests, with user, process and reason (if supplied) -->
+          <Select Path="System">*[System[Provider[@Name='USER32'] and (EventID=1074)]]</Select>
+        </Query>
+ 
+        <Query Id="17" Path="Microsoft-Windows-AppLocker/Packaged app-Execution">
+          <!-- AppLocker packaged (Modern UI) app execution -->
+          <Select Path="Microsoft-Windows-AppLocker/Packaged app-Execution">*</Select>
+        </Query>
+ 
+        <Query Id="18" Path="Microsoft-Windows-AppLocker/Packaged app-Deployment">
+          <!-- AppLocker packaged (Modern UI) app installation -->
+          <Select Path="Microsoft-Windows-AppLocker/Packaged app-Deployment">*</Select>
+        </Query>
+ 
+        <Query Id="19" Path="Application">
+          <!-- EMET events -->
+          <Select Path="Application">*[System[Provider[@Name='EMET']]]</Select>
+        </Query>
+ 
+        <Query Id="20" Path="System">
+          <!-- Event log service events -->
+          <Select Path="System">*[System[Provider[@Name='Microsoft-Windows-Eventlog']]]</Select>
+        </Query>
+ 
+        <Query Id="21" Path="Microsoft-Windows-TaskScheduler/Operational">
+          <!-- Task scheduler Task Registered (106),  Task Registration Deleted (141), Task Deleted (142) -->
+          <Select Path="Microsoft-Windows-TaskScheduler/Operational">*[System[Provider[@Name='Microsoft-Windows-TaskScheduler'] and (EventID=106 or EventID=141 or EventID=142 )]]</Select>
+          <Select Path="System">*[System[Provider[@Name='Microsoft-Windows-TaskScheduler'] and (EventID=106 or EventID=141 or EventID=142 )]]</Select>
+        </Query>
+ 
+        <Query Id="22" Path="System">
+          <!-- System startup (12 - includes OS/SP/Version) and shutdown -->
+          <Select Path="System">*[System[Provider[@Name='Microsoft-Windows-Kernel-General'] and (EventID=12 or EventID=13)]]</Select>
+        </Query>
+ 
+        <Query Id="23" Path="System">
+          <!-- Service Install (7000), service start failure (7045), new service (4697) -->
+          <Select Path="System">*[System[Provider[@Name='Service Control Manager'] and (EventID = 7000 or EventID=7045)]]</Select>
+        </Query>
+ 
+        <Query Id="24" Path="Microsoft-Windows-TerminalServices-RDPClient/Operational">
+          <!-- Log attempted TS connect to remote server -->
+          <Select Path="Microsoft-Windows-TerminalServices-RDPClient/Operational">*[System[(EventID=1024)]]</Select>
+        </Query>
+ 
+        <Query Id="36" Path="Microsoft-Windows-SMBClient/Operational">
+          <!-- get all UNC/mapped drive successful connection -->
+          <Select Path="Microsoft-Windows-SMBClient/Operational">*[System[(EventID=30622 or EventID=30624)]]</Select>
+        </Query>
+ 
+        <Query Id="37" Path="Application">
+          <!-- User logging on with Temporary profile (1511), cannot create profile, using temporary profile (1518)-->
+          <Select Path="Application">*[System[Provider[@Name='Microsoft-Windows-User Profiles Service'] and (EventID=1511 or EventID=1518)]]</Select>
+        </Query>
+ 
+        <Query Id="39" Path="Microsoft-Windows-Sysmon/Operational">
+          <!-- Modern SysMon event provider-->
+          <Select Path="Microsoft-Windows-Sysmon/Operational">*</Select>
+        </Query>
+ 
+        <Query Id="40" Path="Application">
+          <!-- Application crash/hang events, similar to WER/1001. These include full path to faulting EXE/Module.-->
+          <Select Path="Application">*[System[Provider[@Name='Application Error'] and (EventID=1000)]]</Select>
+          <Select Path="Application">*[System[Provider[@Name='Application Hang'] and (EventID=1002)]]</Select>
+        </Query>
+      </QueryList>
+    ]]>
+  </Query>
+ <ReadExistingEvents>true</ReadExistingEvents>
+ <TransportName>HTTP</TransportName>
+ <ContentFormat>Events</ContentFormat>
+ <Locale Language="en-US"/>
+ <LogFile>ForwardedEvents</LogFile>
+ <AllowedSourceNonDomainComputers></AllowedSourceNonDomainComputers>
+ <AllowedSourceDomainComputers>O:NSG:NSD:(A;;GA;;;DC)(A;;GA;;;NS)</AllowedSourceDomainComputers>
+</Subscription>
