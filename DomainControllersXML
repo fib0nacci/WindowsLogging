@@ -1,0 +1,78 @@
+<Subscription xmlns="http://schemas.microsoft.com/2006/03/windows/events/subscription">
+ <SubscriptionId>DomainControllerWEC</SubscriptionId>
+ <SubscriptionType>SourceInitiated</SubscriptionType>
+ <Description>events from Domain Controllers</Description>
+ <Enabled>true</Enabled>
+ <Uri>http://schemas.microsoft.com/wbem/wsman/1/windows/EventLog</Uri>
+ <ConfigurationMode>MinLatency</ConfigurationMode>
+ <Query>
+    <![CDATA[
+      <QueryList>
+        <Query Id="0" Path="Security">
+          <!-- All Security events-->
+          <Select Path="Security">*[System[(EventID!=5156)]]</Select>
+        </Query>
+ 
+        <Query Id="1" Path="Microsoft-Windows-WinRM/Operational">
+          <!--REmote operational logs-->
+          <Select>*[System[(Level=1  or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]</Select>
+        </Query>
+ 
+  
+        <Query Id="2" Path="Microsoft-Windows-PowerShell/Operational">
+          <!-- PowerShell execute block activity (4103), Remote Command(4104), Start Command(4105), Stop Command(4106) -->
+          <Select Path="Microsoft-Windows-PowerShell/Operational">*[System[(EventID=4103 or EventId=4104 or EventId=4105 or EventId=4106)]]</Select>
+        </Query>
+ 
+        <Query Id="3" Path="Windows PowerShell">
+          <!-- Legacy PowerShell pipeline execution details (800) -->
+          <Select Path="Windows PowerShell">*[System[(EventID=800)]]</Select>
+        </Query>
+ 
+        <Query Id="4" Path="System">
+          <!-- Shutdown initiate requests, with user, process and reason (if supplied) -->
+          <Select Path="System">*[System[Provider[@Name='USER32'] and (EventID=1074)]]</Select>
+        </Query>
+ 
+        <Query Id="5" Path="System">
+          <!-- Event log service events -->
+          <Select Path="System">*[System[Provider[@Name='Microsoft-Windows-Eventlog']]]</Select>
+        </Query>
+ 
+        <Query Id="6" Path="Microsoft-Windows-TaskScheduler/Operational">
+          <!-- Task scheduler Task Registered (106),  Task Registration Deleted (141), Task Deleted (142) -->
+          <Select Path="Microsoft-Windows-TaskScheduler/Operational">*[System[Provider[@Name='Microsoft-Windows-TaskScheduler'] and (EventID=106 or EventID=141 or EventID=142 )]]</Select>
+          <Select Path="System">*[System[Provider[@Name='Microsoft-Windows-TaskScheduler'] and (EventID=106 or EventID=141 or EventID=142 )]]</Select>
+        </Query>
+ 
+        <Query Id="7" Path="System">
+          <!-- System startup (12 - includes OS/SP/Version) and shutdown -->
+          <Select Path="System">*[System[Provider[@Name='Microsoft-Windows-Kernel-General'] and (EventID=12 or EventID=13)]]</Select>
+        </Query>
+ 
+        <Query Id="8" Path="System">
+          <!-- Service Install (7000), service start failure (7045), new service (4697) -->
+          <Select Path="System">*[System[Provider[@Name='Service Control Manager'] and (EventID = 7000 or EventID=7045)]]</Select>
+        </Query>
+ 
+        <Query Id="9" Path="Microsoft-Windows-TerminalServices-RDPClient/Operational">
+          <!-- Log attempted TS connect to remote server -->
+          <Select Path="Microsoft-Windows-TerminalServices-RDPClient/Operational">*[System[(EventID=1024)]]</Select>
+        </Query>
+ 
+        <Query Id="10" Path="Microsoft-Windows-SMBClient/Operational">
+          <!-- get all UNC/mapped drive successful connection -->
+          <Select Path="Microsoft-Windows-SMBClient/Operational">*[System[(EventID=30622 or EventID=30624)]]</Select>
+        </Query>
+ 
+      </QueryList>
+    ]]>
+  </Query>
+ <ReadExistingEvents>true</ReadExistingEvents>
+ <TransportName>HTTP</TransportName>
+ <ContentFormat>RenderedText</ContentFormat>
+ <Locale Language="en-US"/>
+ <LogFile>ForwardedEvents</LogFile>
+ <AllowedSourceNonDomainComputers></AllowedSourceNonDomainComputers>
+ <AllowedSourceDomainComputers>O:NSG:NSD:(A;;GA;;;DD)</AllowedSourceDomainComputers>
+</Subscription>
