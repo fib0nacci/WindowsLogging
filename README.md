@@ -8,7 +8,7 @@ Materials that go along with the 2018 IWS presentation. Contents of this repo:
 # WEF primer
 WEF is both awesome and a turd. The awesome part is the pub-sub concepts. To set up the subscription, try this out:
 1. Create a windows server
-2. Set up the GPO
+2. Set up the [GPO](https://github.com/fib0nacci/WindowsLogging/wiki/Group-Policy-Configuration)
 3. Load up the WEF template
 ```wecutil.exe cs path_to_xml_file```
 4. Watch the logs stream in
