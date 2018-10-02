@@ -134,6 +134,17 @@
           <Select Path="Application">*[System[Provider[@Name='Application Error'] and (EventID=1000)]]</Select>
           <Select Path="Application">*[System[Provider[@Name='Application Hang'] and (EventID=1002)]]</Select>
         </Query>
+
+        <Query Id="41" Path="Azure Information Protection">
+            <!-- Azure Information Protection client events -->
+            <Select Path="Azure Information Protection">*</Select>
+        </Query>
+
+        <Query Id="42" Path="Microsoft-Windows-WMI-Activity/Operational">
+          <!-- WMI Activity logs -->
+          <Select Path="Microsoft-Windows-WMI-Activity/Operational">*</Select>
+        </Query>
+    </QueryList>
       </QueryList>
     ]]>
   </Query>
