@@ -64,7 +64,11 @@
           <!-- get all UNC/mapped drive successful connection -->
           <Select Path="Microsoft-Windows-SMBClient/Operational">*[System[(EventID=30622 or EventID=30624)]]</Select>
         </Query>
- 
+
+        <Query Id="11" Path="Microsoft-Windows-WMI-Activity/Operational">
+          <!-- WMI Activity logs -->
+          <Select Path="Microsoft-Windows-WMI-Activity/Operational">*</Select>
+        </Query>
       </QueryList>
     ]]>
   </Query>
