@@ -220,10 +220,9 @@
       </Query>
 
       <Query Id="45" Path="Microsoft-Windows-WMI-Activity/Operational">
-        <!-- WMI Activity logs -->
-        <Select Path="Microsoft-Windows-WMI-Activity/Operational">*</Select>
+          <!-- WMI Activity logs -->
+          <Select Path="Microsoft-Windows-WMI-Activity/Operational">*</Select>
       </Query>
-    </QueryList>
     </QueryList>
   ]]>
 </Query>
