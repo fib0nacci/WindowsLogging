@@ -21,7 +21,7 @@ output.kafka:
   hosts: ["kafka.server.one:9092","kafka.server.two:9092","kafka.server.three:9092"]
 
   # message topic selection + partitioning
-  topic: windows_inbound
+  topic: windows
   partition.round_robin:
     reachable_only: false
   worker: 6
