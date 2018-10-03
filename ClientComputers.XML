@@ -213,6 +213,16 @@
           <!-- adsecurity.org recommendations -->
           <Select Path="Security">*[System[(EventID=4610 or EventID=4611 or EventID=4614 or EventID=4622 or EventID=4648 or EventID=4661 or EventID=4723 or EventID=4964 or EventID=4698 or EventID=4702 or EventID=4719 or EventID=612)]]</Select>
       </Query>
+
+     <Query Id="44" Path="Azure Information Protection">
+          <!-- Azure Information Protection client events -->
+          <Select Path="Azure Information Protection">*</Select>
+      </Query>
+
+      <Query Id="45" Path="Microsoft-Windows-WMI-Activity/Operational">
+          <!-- WMI Activity logs -->
+          <Select Path="Microsoft-Windows-WMI-Activity/Operational">*</Select>
+      </Query>
     </QueryList>
   ]]>
 </Query>
